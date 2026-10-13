@@ -918,6 +918,8 @@ const auth = {
    ① 用 ?api=后端地址 指定（会记住）；② 或由部署脚本替换 DEFAULT_API。 */
 const DEFAULT_API = 'static'; // __DEPLOY_API_BASE__
 
+const STATIC_HOST = DEFAULT_API === 'static'; // 部署脚本标记：纯静态托管，默认无后端
+
 const API_BASE = (() => {
   const q = new URLSearchParams(location.search).get('api');
   if (q) {
@@ -927,12 +929,12 @@ const API_BASE = (() => {
   }
   const saved = localStorage.getItem('pr_api');
   if (saved) return saved.replace(/\/+$/, '');
-  return DEFAULT_API.replace(/\/+$/, '');
+  return STATIC_HOST ? '' : DEFAULT_API.replace(/\/+$/, '');
 })();
 
 async function api(path, opts = {}) {
-  // 静态托管模式（DEFAULT_API='static' 且未指定后端）：短路，不发注定 404 的请求
-  if (DEFAULT_API === 'static' && !API_BASE) return { status: 404, data: {} };
+  // 静态托管模式（未指定后端）：短路，不发注定 404 的请求
+  if (STATIC_HOST && !API_BASE) return { status: 404, data: {} };
   const headers = { 'Content-Type': 'application/json' };
   if (auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
   try {
