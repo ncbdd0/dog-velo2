@@ -2,7 +2,7 @@
    鹈鹕骑行 · Pelican Ride
    Three.js 程序化建模 · WebAudio 合成音乐 · 零素材依赖
    ============================================================ */
-import * as THREE from 'three';
+import * as THREE from './vendor/three.module.js';
 
 /* ---------------- 小工具 ---------------- */
 const $ = (id) => document.getElementById(id);
