@@ -916,7 +916,7 @@ const auth = {
 /* 后端地址：默认同源（本地 node server.js 直连）。
    静态托管（GitHub Pages / jsDelivr）时：
    ① 用 ?api=后端地址 指定（会记住）；② 或由部署脚本替换 DEFAULT_API。 */
-const DEFAULT_API = 'https://wryyv-89-167-172-6.free.pinggy.net'; // __DEPLOY_API_BASE__
+const DEFAULT_API = ''; // __DEPLOY_API_BASE__
 
 const API_BASE = (() => {
   const q = new URLSearchParams(location.search).get('api');
@@ -1080,7 +1080,7 @@ async function openBoard() {
   $('boardMine').innerHTML = '';
   const { status, data } = await api('/api/leaderboard');
   if (status !== 200 || !data.ok) {
-    $('boardList').innerHTML = (status === 0 && !API_BASE)
+    $('boardList').innerHTML = ((status === 0 || status === 404) && !API_BASE)
       ? '<div class="board-empty">未连接成绩后端。<br>在地址后加 <b>?api=后端地址</b> 即可连接成绩服务器</div>'
       : '<div class="board-empty">加载失败，请稍后重试</div>';
     return;
