@@ -916,7 +916,7 @@ const auth = {
 /* 后端地址：默认同源（本地 node server.js 直连）。
    静态托管（GitHub Pages / jsDelivr）时：
    ① 用 ?api=后端地址 指定（会记住）；② 或由部署脚本替换 DEFAULT_API。 */
-const DEFAULT_API = ''; // __DEPLOY_API_BASE__
+const DEFAULT_API = 'static'; // __DEPLOY_API_BASE__
 
 const API_BASE = (() => {
   const q = new URLSearchParams(location.search).get('api');
@@ -931,6 +931,8 @@ const API_BASE = (() => {
 })();
 
 async function api(path, opts = {}) {
+  // 静态托管模式（DEFAULT_API='static' 且未指定后端）：短路，不发注定 404 的请求
+  if (DEFAULT_API === 'static' && !API_BASE) return { status: 404, data: {} };
   const headers = { 'Content-Type': 'application/json' };
   if (auth.token) headers['Authorization'] = 'Bearer ' + auth.token;
   try {
